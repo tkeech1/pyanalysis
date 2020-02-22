@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = ">=5.3.5"
+sphinx = ">=2.4.1"
+black = "==19.10b0" # pre-release dependency so it must be exact match
+flake8 = ">=3.7.9"
+tox = ">=3.14.3"
+coverage = ">=5.0.3"
+mypy = ">=0.761"
+bump2version = ">=1.0.0"
+mock = ">=4.0.1"
+
+[packages]
+pandas = "==1.0.0"
+pandas_datareader = ">=0.8.1"
+argparse = "*"
+
+[requires]
+python_version = "3.8"
