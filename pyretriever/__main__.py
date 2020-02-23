@@ -1,4 +1,4 @@
-""" Blah """
+""" Used to run pyretriever as a module """
 from pyretriever.retriever import get_yahoo_data
 from pyretriever.exception import RetrieverError
 import logging
@@ -71,40 +71,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-"""
-
-    # pull the data
-    start_date: str = "2019-12-01"
-    end_date: str = "2019-12-31"
-
-    predictors: typing.Dict[str, typing.Dict[str, pd.DataFrame]] = {
-        "sp500": {"ticker": "^GSPC"},
-        "gdax": {"ticker": "^GDAXI"},
-        "nikkei": {"ticker": "^N225"},
-        "gold": {"ticker": "GLD"},
-        "10y_treasury": {"ticker": "^TNX"},
-    }
-
-    for predictor in predictors:
-        predictors[predictor]["data"] = data.DataReader(
-            predictors[predictor]["ticker"], "yahoo", start_date, end_date
-        )
-
-    df: pd.DataFrame = None
-    drop_cols: typing.List[str] = ["High", "Low", "Open", "Adj Close", "Volume"]
-
-    for predictor in predictors:
-        predictors[predictor]["data_mod"] = predictors[predictor]["data"].rename(
-            columns={"Close": predictor}, errors="raise"
-        )
-        predictors[predictor]["data_mod"] = predictors[predictor]["data_mod"].drop(
-            drop_cols, axis=1
-        )
-        if df is None:
-            df = predictors[predictor]["data_mod"]
-        else:
-            df = df.join(predictors[predictor]["data_mod"], how="outer")
-
-    df.to_csv("stock.csv")
-"""

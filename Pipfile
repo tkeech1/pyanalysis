@@ -15,7 +15,7 @@ bump2version = ">=1.0.0"
 mock = ">=4.0.1"
 
 [packages]
-pandas = "==1.0.0"
+pandas = ">=1.0.0"
 pandas_datareader = ">=0.8.1"
 argparse = "*"
 

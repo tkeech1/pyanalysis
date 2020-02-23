@@ -1,4 +1,4 @@
-""" tests """
+""" Tests for pyretriever """
 import typing
 from pyretriever.retriever import get_yahoo_data, merge_dataframes
 from pyretriever.exception import RetrieverError
@@ -163,7 +163,5 @@ def test_merge_data():
         df = merge_dataframes(
             test_case["input"], test_case["join_column"], test_case["how"]
         )
-        print(list(df.columns))
-        print(df)
         assert list(df.columns) == test_case["expected_output_columns"]
         assert len(df.index) == test_case["expected_rows"]
