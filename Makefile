@@ -6,7 +6,7 @@ AWS_REGION?=AWS_REGION
 # run 'make get-deps-dev' prior to running any other targets
 
 # run as a module
-run-module: format lint test	
+run-module: #format lint test	
 	python -m pyretriever --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo
 
 # run as a script
@@ -38,6 +38,7 @@ clean-all: clean-docs clean-pyc
 	rm -r .tox/ || true
 	rm -r pyretriever.egg* || true
 	rm -r htmlcov/ || true
+	rm -r .venv/ || true
 	rm *.log
 	
 clean-pyc: 

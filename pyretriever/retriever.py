@@ -22,14 +22,57 @@ import pandas as pd
 import pandas_datareader.data as data
 import pyretriever.exception
 import logging
+from concurrent.futures import ThreadPoolExecutor
+import asyncio
+import time
 
 logger = logging.getLogger(__name__)
 
 
-def get_yahoo_data(
-    symbols: typing.List[str], start_date: str, end_date: str, provider: str = "yahoo",
+def get_data(
+    symbol: str, start_date: str, end_date: str, provider: str = "yahoo",
 ) -> typing.Dict[str, pd.DataFrame]:
-    """Gets data from Yahoo Finance for a range of time given by
+    """Wrapper for a single call to Pandas.DataReader.
+
+    Args:
+            symbol (str): A ticker symbol available on Yahoo finance.
+
+            start_date (str): The earliest date to return.
+
+            end_date (str): The latest date to return.
+
+            provider (str): The data provider to use (supports Yahoo only).
+
+    Returns:
+            Dict[str, pd.DataFrame]: A dictionary of dataframes in which the key is the
+                ticker symbol and the pd.Dataframe is the stock price data.
+
+    """
+    logger.debug(f"Fetching: {symbol}")
+    try:
+        df = data.DataReader(symbol, provider, start_date, end_date)
+        logger.debug(f"Done: {symbol}")
+        return {symbol: df}
+    except Exception as e:
+        logger.error(e)
+        logger.error(
+            f"Args: provider={provider}, symbol={symbol}"
+            + f", start_date={start_date}"
+            + f", end_date={end_date}"
+        )
+        raise pyretriever.exception.RetrieverError(
+            " pyretriever encountered an error ", e
+        )
+
+
+async def get_yahoo_data_async(
+    symbols: typing.List[str],
+    start_date: str,
+    end_date: str,
+    timeout: int,
+    provider: str = "yahoo",
+) -> typing.Dict[str, pd.DataFrame]:
+    """Gets data asynchronously from Yahoo Finance for a range of time given by
         start_date and stop_date. Supports data retrieval for multiple stock symbols.
 
     Args:
@@ -47,13 +90,73 @@ def get_yahoo_data(
 
     """
 
+    if len(symbols) == 0:
+        return {}
+
+    final_dict: typing.Dict[str, pd.DataFrame] = {}
+
+    try:
+
+        executor = ThreadPoolExecutor(max_workers=1)
+        loop = asyncio.get_event_loop()
+        blocking_tasks = []
+
+        for symbol in symbols:
+            if provider == "yahoo":
+                blocking_tasks.append(
+                    loop.run_in_executor(
+                        executor, get_data, symbol, start_date, end_date, provider
+                    )
+                )
+
+        completed, pending = await asyncio.wait(blocking_tasks, timeout=timeout)
+        results = [t.result() for t in completed]
+        for r in results:
+            for k, v in r.items():
+                final_dict[k] = v
+
+    except Exception as e:
+        logger.error(e)
+        logger.error(
+            f"Args: provider={provider}, symbols={symbols}"
+            + f", start_date={start_date}"
+            + f", end_date={end_date}"
+        )
+        raise pyretriever.exception.RetrieverError(
+            " pyretriever encountered an error ", e
+        )
+
+    return final_dict
+
+
+def get_yahoo_data(
+    symbols: typing.List[str], start_date: str, end_date: str, provider: str = "yahoo",
+) -> typing.Dict[str, pd.DataFrame]:
+    """Gets data from Yahoo Finance for a range of time given by
+        start_date and stop_date. Supports data retrieval for multiple stock symbols.
+    Args:
+            symbols (List[str]): A list of ticker symbols available on Yahoo finance.
+            start_date (str): The earliest date to return.
+            end_date (str): The latest date to return.
+            provider (str): The data provider to use (supports Yahoo only).
+    Returns:
+            Dict[str, pd.DataFrame]: A dictionary of dataframes in which the key is the
+                ticker symbol and the pd.Dataframe is the stock price data.
+    """
+
+    if len(symbols) == 0:
+        return {}
+
     symbol_data: typing.Dict[str, pd.DataFrame] = {}
     for symbol in symbols:
         if provider == "yahoo":
             try:
-                symbol_data[symbol] = data.DataReader(
-                    symbol, provider, start_date, end_date
-                )
+                symbol_data[symbol] = get_data(
+                    symbol=symbol,
+                    provider=provider,
+                    start_date=start_date,
+                    end_date=end_date,
+                )[symbol]
             except Exception as e:
                 logger.error(e)
                 logger.error(
@@ -89,7 +192,6 @@ def merge_dataframes(
     """
     final_df: pd.DataFrame = None
     for key, df in dataframes.items():
-        # TODO make this a comprehension
         column_dict = {}
         for col in df.columns:
             if join_column == col:

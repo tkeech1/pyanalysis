@@ -1,18 +1,20 @@
 """ Used to run pyretriever as a module """
-from pyretriever.retriever import get_yahoo_data
+from pyretriever.retriever import get_yahoo_data_async
 from pyretriever.exception import RetrieverError
 import logging
 import logging.config
 import argparse
 import json
+import asyncio
+import typing
+
+with open("logging.json", "rt") as f:
+    config = json.load(f)
+    logging.config.dictConfig(config)
+    logger = logging.getLogger("pyretriever")
 
 
-def main() -> None:
-    with open("logging.json", "rt") as f:
-        config = json.load(f)
-        logging.config.dictConfig(config)
-        logger = logging.getLogger("pyretriever")
-
+def get_args() -> argparse.Namespace:
     my_parser: argparse.ArgumentParser = argparse.ArgumentParser(
         description="Download Yahoo stock data and merge multiple "
         "ticker symbols into a single CSV file"
@@ -56,18 +58,38 @@ def main() -> None:
         + f", end_date={args.end_date}"
     )
 
+    return args
+
+
+async def main_async() -> typing.Any:
+
+    args = get_args()
+    timeout = 5
+
     if args.provider == "yahoo":
         try:
-            get_yahoo_data(
-                provider=args.provider,
-                symbols=args.symbol,
-                start_date=args.start_date,
-                end_date=args.end_date,
-            )
-            logger.debug(f"Success")
+            task = [
+                asyncio.create_task(
+                    get_yahoo_data_async(
+                        provider=args.provider,
+                        symbols=args.symbol,
+                        start_date=args.start_date,
+                        end_date=args.end_date,
+                        timeout=timeout,
+                    )
+                )
+            ]
+            await asyncio.wait(task, timeout=timeout)
+            return task
         except RetrieverError as e:
             logger.error(e)
 
 
 if __name__ == "__main__":
-    main()
+    task = asyncio.run(main_async())
+    for t in task:
+        try:
+            logger.debug("Success")
+            logger.debug(f"{t.result()}")
+        except Exception as e:
+            logger.error(e)
