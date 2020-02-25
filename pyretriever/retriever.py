@@ -24,7 +24,6 @@ import pyretriever.exception
 import logging
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
-import time
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +96,7 @@ async def get_yahoo_data_async(
 
     try:
 
-        executor = ThreadPoolExecutor(max_workers=1)
+        executor = ThreadPoolExecutor(max_workers=5)
         loop = asyncio.get_event_loop()
         blocking_tasks = []
 
