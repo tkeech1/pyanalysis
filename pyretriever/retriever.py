@@ -43,7 +43,7 @@ def get_data(
             provider (str): The data provider to use (supports Yahoo only).
 
     Returns:
-            Dict[str, pd.DataFrame]: A dictionary of dataframes in which the key is the
+            Dict[str, pd.DataFrame]: A dictionary of dataframes. The key is the
                 ticker symbol and the pd.Dataframe is the stock price data.
 
     """
