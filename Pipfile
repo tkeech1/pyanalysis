@@ -13,12 +13,13 @@ coverage = ">=5.0.3"
 mypy = ">=0.761"
 bump2version = ">=1.0.0"
 mock = ">=4.0.1"
+pytest-asyncio = "*"
 
 [packages]
 pandas = ">=1.0.0"
 pandas_datareader = ">=0.8.1"
 argparse = "*"
-pytest-asyncio = "*"
+boto3 = ">=1.12.8"
 
 [requires]
 python_version = "3.8"

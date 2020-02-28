@@ -25,7 +25,9 @@
         "-e",
         "AWS_DEFAULT_REGION=${env:AWS_REGION}",
         "-e",
-        "PIPENV_VENV_IN_PROJECT=enabled"
+        "PIPENV_VENV_IN_PROJECT=enabled",
+        "-e",
+        "PIPENV_IGNORE_VIRTUALENVS=1"
     ],
     "appPort": [],
     // Use 'settings' to set *default* container specific settings.json values on container create. 

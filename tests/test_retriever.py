@@ -77,7 +77,10 @@ async def test_get_yahoo_data_async(mock_DataReader):
         # test that the mock was called for each symbol
         for symbol in test_case["symbols"]:
             mock_DataReader.assert_any_call(
-                symbol, "yahoo", test_case["start_date"], test_case["end_date"],
+                symbol,
+                test_case["provider"],
+                test_case["start_date"],
+                test_case["end_date"],
             )
 
         # test that the returned dict has an item for each symbol
@@ -104,7 +107,10 @@ def test_get_yahoo_data(mock_DataReader):
         # test that the mock was called for each symbol
         for symbol in test_case["symbols"]:
             mock_DataReader.assert_any_call(
-                symbol, "yahoo", test_case["start_date"], test_case["end_date"],
+                symbol,
+                test_case["provider"],
+                test_case["start_date"],
+                test_case["end_date"],
             )
 
         # test that the returned dict has an item for each symbol

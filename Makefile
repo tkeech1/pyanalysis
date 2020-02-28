@@ -6,7 +6,7 @@ AWS_REGION?=AWS_REGION
 # run 'make get-deps-dev' prior to running any other targets
 
 # run as a module
-run-module: #format lint test	
+run-module: format lint test	
 	python -m pyretriever --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo
 
 # run as a script
@@ -31,14 +31,16 @@ lint:
 tox:
 	tox
 
-clean-all: clean-docs clean-pyc
+clean-all: clean
+	rm -r .venv/ || true
+
+clean: clean-docs clean-pyc
 	rm -r __pycache__/ || true
 	rm -r .mypy_cache/ || true
 	rm -r .pytest_cache/ || true
 	rm -r .tox/ || true
-	rm -r pyretriever.egg* || true
+	rm -r pyanalysis.egg* || true
 	rm -r htmlcov/ || true
-	rm -r .venv/ || true
 	rm *.log
 	
 clean-pyc: 
@@ -66,12 +68,12 @@ bumpversion-minor:
 bumpversion-major:
 	bump2version major
 
-get-deps-dev:
+deps-dev:
 	pipenv install --dev
 	pipenv shell
 
 lock-deps:
 	pipenv lock
 
-get-deps-prd:
+deps-prd:
 	pipenv install --ignore-pipfile
