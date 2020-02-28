@@ -41,7 +41,7 @@ clean: clean-docs clean-pyc
 	rm -r .tox/ || true
 	rm -r pyanalysis.egg* || true
 	rm -r htmlcov/ || true
-	rm *.log
+	rm *.log || true
 	
 clean-pyc: 
 	find . -name '*.pyc' -exec rm -f {} +
