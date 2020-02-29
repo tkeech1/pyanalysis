@@ -165,51 +165,37 @@ def test_merge_data():
         # test one column
         {
             "input": {
-                "SPY": pd.DataFrame({"Date": ["01-01-2001", "01-02-2001"]}),
+                "SPY": pd.DataFrame({}, index=["01-01-2001", "01-02-2001"]),
                 "QQQ": pd.DataFrame(
-                    {"Date": ["01-01-2001", "01-02-2001"], "High": [3, 4]}
+                    {"High": [3, 4]}, index=["01-01-2001", "01-02-2001"]
                 ),
             },
-            "join_column": "Date",
             "how": "outer",
-            "expected_output_columns": ["Date", "QQQ_High"],
+            "expected_output_columns": ["QQQ_High"],
             "expected_rows": 2,
         },
         # test multiple column
         {
             "input": {
                 "SPY": pd.DataFrame(
-                    {
-                        "Date": ["01-01-2001", "01-02-2001"],
-                        "High": [3, 4],
-                        "Low": [3, 4],
-                    }
+                    {"High": [3, 4], "Low": [3, 4],}, index=["01-01-2001", "01-02-2001"]
                 ),
                 "QQQ": pd.DataFrame(
-                    {"Date": ["01-01-2001", "01-02-2001"], "Low": [None, 4]}
+                    {"Low": [None, 4]}, index=["01-01-2001", "01-02-2001"]
                 ),
                 "INX": pd.DataFrame(
-                    {"Date": ["01-01-2001", "01-02-2001"], "High": [3, 4]}
+                    {"High": [3, 4]}, index=["01-01-2001", "01-02-2001"]
                 ),
                 "GSPC": pd.DataFrame(
-                    {"Date": ["01-01-2001", "01-02-2001"], "Close": [3, None]}
+                    {"Close": [3, None]}, index=["01-01-2001", "01-02-2001"]
                 ),
                 "GOOG": pd.DataFrame(
-                    {
-                        "Date": [
-                            "01-01-2001",
-                            "01-02-2001",
-                            "01-03-2001",
-                            "01-04-2001",
-                        ],
-                        "Adj Close": [3, 4, None, 6],
-                    }
+                    {"Adj Close": [3, 4, None, 6],},
+                    index=["01-01-2001", "01-02-2001", "01-03-2001", "01-04-2001",],
                 ),
             },
-            "join_column": "Date",
             "how": "outer",
             "expected_output_columns": [
-                "Date",
                 "SPY_High",
                 "SPY_Low",
                 "QQQ_Low",
@@ -222,9 +208,6 @@ def test_merge_data():
     ]
 
     for test_case in test_cases:
-
-        df = merge_dataframes(
-            test_case["input"], test_case["join_column"], test_case["how"]
-        )
+        df = merge_dataframes(test_case["input"], test_case["how"])
         assert list(df.columns) == test_case["expected_output_columns"]
         assert len(df.index) == test_case["expected_rows"]

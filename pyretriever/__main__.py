@@ -1,6 +1,7 @@
 """ Used to run pyretriever as a module """
-from pyretriever.retriever import get_yahoo_data_async
+from pyretriever.retriever import get_yahoo_data_async, merge_dataframes
 from pyretriever.exception import RetrieverError
+import pandas as pd
 import logging
 import logging.config
 import argparse
@@ -86,10 +87,12 @@ async def main_async() -> typing.Any:
 
 
 if __name__ == "__main__":
-    task = asyncio.run(main_async())
-    for t in task:
-        try:
+    try:
+        task = asyncio.run(main_async())
+        df = pd.DataFrame()
+        for t in task:
             logger.debug("Success")
-            logger.debug(f"{t.result()}")
-        except Exception as e:
-            logger.error(e)
+            df = merge_dataframes(t.result(), how="outer")
+        # logger.debug(df)
+    except Exception as e:
+        logger.error(e)

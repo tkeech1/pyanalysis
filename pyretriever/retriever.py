@@ -171,7 +171,7 @@ def get_yahoo_data(
 
 
 def merge_dataframes(
-    dataframes: typing.Dict[str, pd.DataFrame], join_column: str, how: str
+    dataframes: typing.Dict[str, pd.DataFrame], how: str
 ) -> pd.DataFrame:
     """Merges several data frames into a singe data frame on a given join key. This
     function renames each column to dictkey_columnname.
@@ -193,8 +193,6 @@ def merge_dataframes(
     for key, df in dataframes.items():
         column_dict = {}
         for col in df.columns:
-            if join_column == col:
-                continue
             column_dict[col] = f"{key}_{col}"
 
         df = df.rename(columns=column_dict, errors="raise")
@@ -202,6 +200,5 @@ def merge_dataframes(
             final_df = df
         else:
             final_df = final_df.join(df, how=how, rsuffix=f"_{key}")
-            final_df = final_df.drop(columns=f"{join_column}_{key}")
 
     return final_df
