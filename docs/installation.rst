@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install pyretriever, run this command in your terminal:
+To install pyanalysis, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install pyretriever
+    $ pip install pyanalysis
 
-This is the preferred method to install pyretriever, as it will always install the most recent stable release.
+This is the preferred method to install pyanalysis, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,19 +26,19 @@ you through the process.
 From sources
 ------------
 
-The sources for pyretriever can be downloaded from the `Github repo`_.
+The sources for pyanalysis can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/tkeech1/pyretriever
+    $ git clone git://github.com/tkeech1/pyanalysis
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/tkeech1/pyretriever/tarball/master
+    $ curl -OJL https://github.com/tkeech1/pyanalysis/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/tkeech1/pyretriever
-.. _tarball: https://github.com/tkeech1/pyretriever/tarball/master
+.. _Github repo: https://github.com/tkeech1/pyanalysis
+.. _tarball: https://github.com/tkeech1/pyanalysis/tarball/master

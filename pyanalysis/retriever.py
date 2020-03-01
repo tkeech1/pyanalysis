@@ -3,7 +3,7 @@
 This module retrieves data from Yahoo Finance.
 
 Example:
-    $ python -m pyretriever --symbol ^GSPC ^GDAXI --start-date 2019-12-01
+    $ python -m pyanalysis --symbol ^GSPC ^GDAXI --start-date 2019-12-01
         --end-date 2019-12-02 --provider=yahoo
 
 Attributes:
@@ -20,7 +20,7 @@ Todo:
 import typing
 import pandas as pd
 import pandas_datareader.data as data
-import pyretriever.exception
+import pyanalysis.exception
 import logging
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
@@ -59,8 +59,8 @@ def get_data(
             + f", start_date={start_date}"
             + f", end_date={end_date}"
         )
-        raise pyretriever.exception.RetrieverError(
-            " pyretriever encountered an error ", e
+        raise pyanalysis.exception.RetrieverError(
+            " pyanalysis encountered an error ", e
         )
 
 
@@ -71,11 +71,13 @@ async def get_yahoo_data_async(
     timeout: int,
     provider: str = "yahoo",
 ) -> typing.Dict[str, pd.DataFrame]:
-    """Gets data asynchronously from Yahoo Finance for a range of time given by
-        start_date and stop_date. Supports data retrieval for multiple stock symbols.
+    """Gets data asynchronously from Yahoo Finance for a range of time given
+        by start_date and stop_date. Supports data retrieval for multiple
+        stock symbols.
 
     Args:
-            symbols (List[str]): A list of ticker symbols available on Yahoo finance.
+            symbols (List[str]): A list of ticker symbols
+            available on Yahoo finance.
 
             start_date (str): The earliest date to return.
 
@@ -84,8 +86,9 @@ async def get_yahoo_data_async(
             provider (str): The data provider to use (supports Yahoo only).
 
     Returns:
-            Dict[str, pd.DataFrame]: A dictionary of dataframes in which the key is the
-                ticker symbol and the pd.Dataframe is the stock price data.
+            Dict[str, pd.DataFrame]: A dictionary of dataframes in which the
+            key is the ticker symbol and the pd.Dataframe is the stock price
+            data.
 
     """
 
@@ -104,11 +107,18 @@ async def get_yahoo_data_async(
             if provider == "yahoo":
                 blocking_tasks.append(
                     loop.run_in_executor(
-                        executor, get_data, symbol, start_date, end_date, provider
+                        executor,
+                        get_data,
+                        symbol,
+                        start_date,
+                        end_date,
+                        provider,
                     )
                 )
 
-        completed, pending = await asyncio.wait(blocking_tasks, timeout=timeout)
+        completed, pending = await asyncio.wait(
+            blocking_tasks, timeout=timeout
+        )
         results = [t.result() for t in completed]
         for r in results:
             for k, v in r.items():
@@ -121,15 +131,18 @@ async def get_yahoo_data_async(
             + f", start_date={start_date}"
             + f", end_date={end_date}"
         )
-        raise pyretriever.exception.RetrieverError(
-            " pyretriever encountered an error ", e
+        raise pyanalysis.exception.RetrieverError(
+            " pyanalysis encountered an error ", e
         )
 
     return final_dict
 
 
 def get_yahoo_data(
-    symbols: typing.List[str], start_date: str, end_date: str, provider: str = "yahoo",
+    symbols: typing.List[str],
+    start_date: str,
+    end_date: str,
+    provider: str = "yahoo",
 ) -> typing.Dict[str, pd.DataFrame]:
     """Gets data from Yahoo Finance for a range of time given by
         start_date and stop_date. Supports data retrieval for multiple stock symbols.
@@ -163,8 +176,8 @@ def get_yahoo_data(
                     + f", start_date={start_date}"
                     + f", end_date={end_date}"
                 )
-                raise pyretriever.exception.RetrieverError(
-                    " pyretriever encountered an error ", e
+                raise pyanalysis.exception.RetrieverError(
+                    " pyanalysis encountered an error ", e
                 )
 
     return symbol_data
@@ -202,3 +215,18 @@ def merge_dataframes(
             final_df = final_df.join(df, how=how, rsuffix=f"_{key}")
 
     return final_df
+
+
+def df_to_s3_csv(df: pd.DataFrame, bucket_name: str, file_name: str):
+    # save a df to s3 as a csv
+    #
+    # from io import StringIO
+    # import boto3
+    # csv_buffer = StringIO()
+    # df.to_csv(csv_buffer)
+    # s3_resource = boto3.resource('s3')
+    # s3_resource.Object(bucket_name, file_name)
+    # .put(Body=csv_buffer.getvalue())
+    #
+    logger.debug(f"{bucket_name}-{file_name}")
+    pass

@@ -1,7 +1,11 @@
-""" Tests for pyretriever """
+""" Tests for pyanalysis """
 import typing
-from pyretriever.retriever import get_yahoo_data, get_yahoo_data_async, merge_dataframes
-from pyretriever.exception import RetrieverError
+from pyanalysis.retriever import (
+    get_yahoo_data,
+    get_yahoo_data_async,
+    merge_dataframes,
+)
+from pyanalysis.exception import RetrieverError
 from unittest.mock import patch
 import pandas as pd
 import pytest
@@ -139,7 +143,9 @@ async def test_get_yahoo_data_exception_async(mock_DataReader):
                 )
             )
 
-        assert isinstance(exception_info.value, test_case["expected_exception"])
+        assert isinstance(
+            exception_info.value, test_case["expected_exception"]
+        )
 
 
 @patch("pandas_datareader.data.DataReader")
@@ -156,7 +162,9 @@ def test_get_yahoo_data_exception(mock_DataReader):
                 provider=test_case["provider"],
             )
 
-        assert isinstance(exception_info.value, test_case["expected_exception"])
+        assert isinstance(
+            exception_info.value, test_case["expected_exception"]
+        )
 
 
 def test_merge_data():
@@ -178,7 +186,8 @@ def test_merge_data():
         {
             "input": {
                 "SPY": pd.DataFrame(
-                    {"High": [3, 4], "Low": [3, 4],}, index=["01-01-2001", "01-02-2001"]
+                    {"High": [3, 4], "Low": [3, 4]},
+                    index=["01-01-2001", "01-02-2001"],
                 ),
                 "QQQ": pd.DataFrame(
                     {"Low": [None, 4]}, index=["01-01-2001", "01-02-2001"]
@@ -190,8 +199,13 @@ def test_merge_data():
                     {"Close": [3, None]}, index=["01-01-2001", "01-02-2001"]
                 ),
                 "GOOG": pd.DataFrame(
-                    {"Adj Close": [3, 4, None, 6],},
-                    index=["01-01-2001", "01-02-2001", "01-03-2001", "01-04-2001",],
+                    {"Adj Close": [3, 4, None, 6]},
+                    index=[
+                        "01-01-2001",
+                        "01-02-2001",
+                        "01-03-2001",
+                        "01-04-2001",
+                    ],
                 ),
             },
             "how": "outer",

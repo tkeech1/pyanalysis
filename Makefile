@@ -7,7 +7,7 @@ AWS_REGION?=AWS_REGION
 
 # run as a module
 run-module: format lint test	
-	python -m pyretriever --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo
+	python -m pyanalysis --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo --file-name=df.csv --bucket-name=stock
 
 # run as a script
 run-script:	
@@ -17,16 +17,17 @@ debug-test:
 	python -m pytest -s
 	
 test:	
-	coverage run --source pyretriever --omit test_*.py -m pytest
+	coverage run --source pyanalysis --omit test_*.py -m pytest
 	coverage report -m 
 	coverage html
 
 format:
-	black pyretriever
+	black --line-length=79 pyanalysis
 
 lint:	
-	flake8 pyretriever
-	mypy pyretriever
+	flake8 pyanalysis
+	mypy pyanalysis
+	pycodestyle pyanalysis
 
 tox:
 	tox
@@ -50,12 +51,12 @@ clean-pyc:
 	find . -name '__pycache__' -exec rm -fr {} +
 
 clean-docs:
-	rm -f docs/pyretriever.rst || true
+	rm -f docs/pyanalysis.rst || true
 	rm -f docs/modules.rst || true
 	rm -fr docs/_build || true
 
 docs-html: clean-docs
-	sphinx-apidoc -o docs/ pyretriever
+	sphinx-apidoc -o docs/ pyanalysis
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 

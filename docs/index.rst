@@ -1,4 +1,4 @@
-Welcome to pyretriever's documentation!
+Welcome to pyanalysis's documentation!
 ======================================
 
 .. toctree::

@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use pyretriever in a project::
+To use pyanalysis in a project::
 
-    import pyretriever
+    import pyanalysis

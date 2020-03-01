@@ -33,7 +33,7 @@
         }
     },
     "loggers": {
-        "pyretriever": {
+        "pyanalysis": {
             "level": "DEBUG",
             "handlers": [
                 "console",

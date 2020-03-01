@@ -1,9 +1,11 @@
-""" Used to run pyretriever as a module """
-from pyretriever.retriever import get_yahoo_data_async, merge_dataframes
-from pyretriever.exception import RetrieverError
+""" Used to run pyanalysis as a module """
+from pyanalysis.retriever import get_yahoo_data_async
+from pyanalysis.retriever import merge_dataframes, df_to_s3_csv
+from pyanalysis.exception import RetrieverError
 import pandas as pd
 import logging
 import logging.config
+from argparse import Namespace
 import argparse
 import json
 import asyncio
@@ -12,7 +14,7 @@ import typing
 with open("logging.json", "rt") as f:
     config = json.load(f)
     logging.config.dictConfig(config)
-    logger = logging.getLogger("pyretriever")
+    logger = logging.getLogger("pyanalysis")
 
 
 def get_args() -> argparse.Namespace:
@@ -50,6 +52,20 @@ def get_args() -> argparse.Namespace:
         help="the data provider (yahoo is currently the only supported provider)",
         required=True,
     )
+    my_parser.add_argument(
+        "--bucket-name",
+        type=str,
+        action="store",
+        help="the name of an s3 bucket",
+        required=True,
+    )
+    my_parser.add_argument(
+        "--file-name",
+        type=str,
+        action="store",
+        help="the name of the file to write to s3",
+        required=True,
+    )
 
     args = my_parser.parse_args()
 
@@ -62,9 +78,8 @@ def get_args() -> argparse.Namespace:
     return args
 
 
-async def main_async() -> typing.Any:
+async def main_async(args: Namespace) -> typing.Any:
 
-    args = get_args()
     timeout = 5
 
     if args.provider == "yahoo":
@@ -87,12 +102,15 @@ async def main_async() -> typing.Any:
 
 
 if __name__ == "__main__":
+    args = get_args()
+
     try:
-        task = asyncio.run(main_async())
+        task = asyncio.run(main_async(args))
         df = pd.DataFrame()
         for t in task:
             logger.debug("Success")
             df = merge_dataframes(t.result(), how="outer")
-        # logger.debug(df)
+        logger.debug(df)
+        df_to_s3_csv(df, args.bucket_name, args.file_name)
     except Exception as e:
         logger.error(e)

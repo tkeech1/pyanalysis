@@ -1,4 +1,4 @@
-"""Top-level package for pyretriever."""
+"""Top-level package for pyanalysis."""
 
 import logging
 
