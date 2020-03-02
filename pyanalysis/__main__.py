@@ -1,7 +1,6 @@
 """ Used to run pyanalysis as a module """
 from pyanalysis.retriever import get_yahoo_data_async
-from pyanalysis.retriever import merge_dataframes, df_to_s3_csv
-from pyanalysis.exception import RetrieverError
+from pyanalysis.retriever import merge_dataframes, df_to_s3_csv, RetrieverError
 import pandas as pd
 import logging
 import logging.config
@@ -108,9 +107,9 @@ if __name__ == "__main__":
         task = asyncio.run(main_async(args))
         df = pd.DataFrame()
         for t in task:
-            logger.debug("Success")
             df = merge_dataframes(t.result(), how="outer")
-        logger.debug(df)
+        logger.debug("Merged data frames")
         df_to_s3_csv(df, args.bucket_name, args.file_name)
+        df.to_csv(f"./{args.file_name}")
     except Exception as e:
         logger.error(e)

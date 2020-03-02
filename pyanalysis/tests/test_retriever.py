@@ -4,8 +4,8 @@ from pyanalysis.retriever import (
     get_yahoo_data,
     get_yahoo_data_async,
     merge_dataframes,
+    RetrieverError,
 )
-from pyanalysis.exception import RetrieverError
 from unittest.mock import patch
 import pandas as pd
 import pytest

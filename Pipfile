@@ -17,7 +17,7 @@ pytest-asyncio = ">=0.10.0"
 pycodestyle = "*"
 
 [packages]
-pandas = ">=1.0.0"
+pandas = ">=1.0.1"
 pandas_datareader = ">=0.8.1"
 argparse = "*"
 boto3 = ">=1.12.8"

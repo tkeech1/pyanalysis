@@ -43,6 +43,9 @@ clean: clean-docs clean-pyc
 	rm -r pyanalysis.egg* || true
 	rm -r htmlcov/ || true
 	rm *.log || true
+	rm -r build/ || true
+	rm -r dist/ || true
+	rm df.csv || true
 	
 clean-pyc: 
 	find . -name '*.pyc' -exec rm -f {} +
@@ -78,3 +81,37 @@ lock-deps:
 
 deps-prd:
 	pipenv install --ignore-pipfile
+
+build-wheel: clean
+	python setup.py bdist_wheel
+
+build-sdist: clean
+	python setup.py sdist
+
+install-wheel:
+	pip install dist/pyanalysis-version_0.0.1_-py3-none-any.whl
+
+uninstall-wheel:
+	pip uninstall -y pyanalysis
+
+run-wheel: # must be done after installing the wheel
+	# run directly from the wheel file
+	# python dist/pyanalysis-version_0.0.1_-py3-none-any.whl/pyanalysis
+	# or use the module
+	cd ~ && python -m pyanalysis
+
+distribute:
+	#python setup.py register pyanalysis
+	#python setup.py sdist upload -r testpypi
+	# OR #
+	#python setup.py bdist_wheel upload -r testpypi
+
+install-setup:
+	python setup.py install 
+
+run-entry-point:
+	.venv/bin/pyanalysis-retriever
+
+uninstall-setup:
+	rm .venv/lib/python3.8/site-packages/pyanalysis-version_0.0.1_-py3.8.egg || true
+	rm .venv/bin/pyanalysis-retriever || true
