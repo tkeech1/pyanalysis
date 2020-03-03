@@ -15,6 +15,8 @@ run-script:
 
 debug-test:
 	python -m pytest -s
+	# using more processes makes it slower for a small number of tests
+	# --numprocesses=auto
 	
 test:	
 	coverage run --source pyanalysis --omit test_*.py -m pytest

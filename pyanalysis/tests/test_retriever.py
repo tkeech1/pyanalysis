@@ -10,62 +10,73 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-# TODO - test timeout
-get_yahoo_data_test_cases: typing.List[typing.Any] = [
-    # test empty symbol list
-    {
-        "symbols": [],
-        "provider": "yahoo",
-        "start_date": None,
-        "end_date": None,
-        "timeout": 5,
-        "mock_return": pd.DataFrame(),
-        "expected_return": {},
-    },
-    # test multiple symbols
-    {
-        "symbols": ["SPY", "QQQ"],
-        "provider": "yahoo",
-        "start_date": "2019-12-01",
-        "end_date": "2019-12-02",
-        "timeout": 5,
-        "mock_return": pd.DataFrame({"ZZZ": [1, 2]}),
-        "expected_return": {
-            "SPY": pd.DataFrame({"ZZZ": [1, 2]}),
-            "QQQ": pd.DataFrame({"ZZZ": [1, 2]}),
-        },
-    },
-    # test a single symbol
-    {
-        "symbols": ["PPP"],
-        "start_date": "2019-12-01",
-        "end_date": "2019-12-02",
-        "provider": "yahoo",
-        "timeout": 5,
-        "mock_return": pd.DataFrame({"AAA": [1, 2]}),
-        "expected_return": {"PPP": pd.DataFrame({"AAA": [1, 2]})},
-    },
-]
 
-get_yahoo_data_exception_test_cases: typing.List[typing.Any] = [
-    # test exception
-    {
-        "symbols": ["GSPC"],
-        "provider": "yahoo",
-        "start_date": None,
-        "end_date": None,
-        "timeout": 5,
-        "mock_side_effect": Exception("Boom!"),
-        "expected_exception": RetrieverError,
-    }
-]
+@pytest.fixture(scope="module")
+def yahoo_data_test_cases():
+    # TODO - test timeout
+    test_cases: typing.List[typing.Any] = [
+        # test empty symbol list
+        {
+            "symbols": [],
+            "provider": "yahoo",
+            "start_date": None,
+            "end_date": None,
+            "timeout": 5,
+            "mock_return": pd.DataFrame(),
+            "expected_return": {},
+        },
+        # test multiple symbols
+        {
+            "symbols": ["SPY", "QQQ"],
+            "provider": "yahoo",
+            "start_date": "2019-12-01",
+            "end_date": "2019-12-02",
+            "timeout": 5,
+            "mock_return": pd.DataFrame({"ZZZ": [1, 2]}),
+            "expected_return": {
+                "SPY": pd.DataFrame({"ZZZ": [1, 2]}),
+                "QQQ": pd.DataFrame({"ZZZ": [1, 2]}),
+            },
+        },
+        # test a single symbol
+        {
+            "symbols": ["PPP"],
+            "start_date": "2019-12-01",
+            "end_date": "2019-12-02",
+            "provider": "yahoo",
+            "timeout": 5,
+            "mock_return": pd.DataFrame({"AAA": [1, 2]}),
+            "expected_return": {"PPP": pd.DataFrame({"AAA": [1, 2]})},
+        },
+    ]
+    yield test_cases
+    # tear-down
+
+
+@pytest.fixture(scope="module")
+def yahoo_data_exception_test_cases():
+    # TODO - test timeout
+    test_cases: typing.List[typing.Any] = [
+        # test exception
+        {
+            "symbols": ["GSPC"],
+            "provider": "yahoo",
+            "start_date": None,
+            "end_date": None,
+            "timeout": 5,
+            "mock_side_effect": Exception("Boom!"),
+            "expected_exception": RetrieverError,
+        }
+    ]
+    yield test_cases
+    # tear-down
 
 
 @pytest.mark.asyncio
 @patch("pandas_datareader.data.DataReader")
-async def test_get_yahoo_data_async(mock_DataReader):
+async def test_get_yahoo_data_async(mock_DataReader, yahoo_data_test_cases):
 
-    for test_case in get_yahoo_data_test_cases:
+    for test_case in yahoo_data_test_cases:
         mock_DataReader.return_value = test_case["mock_return"]
 
         actual_value = await (
@@ -96,9 +107,9 @@ async def test_get_yahoo_data_async(mock_DataReader):
 
 
 @patch("pandas_datareader.data.DataReader")
-def test_get_yahoo_data(mock_DataReader):
+def test_get_yahoo_data(mock_DataReader, yahoo_data_test_cases):
 
-    for test_case in get_yahoo_data_test_cases:
+    for test_case in yahoo_data_test_cases:
         mock_DataReader.return_value = test_case["mock_return"]
 
         actual_value = get_yahoo_data(
@@ -127,9 +138,11 @@ def test_get_yahoo_data(mock_DataReader):
 
 @pytest.mark.asyncio
 @patch("pandas_datareader.data.DataReader")
-async def test_get_yahoo_data_exception_async(mock_DataReader):
+async def test_get_yahoo_data_exception_async(
+    mock_DataReader, yahoo_data_exception_test_cases
+):
 
-    for test_case in get_yahoo_data_exception_test_cases:
+    for test_case in yahoo_data_exception_test_cases:
         mock_DataReader.side_effect = test_case["mock_side_effect"]
 
         with pytest.raises(Exception) as exception_info:
@@ -143,15 +156,13 @@ async def test_get_yahoo_data_exception_async(mock_DataReader):
                 )
             )
 
-        assert isinstance(
-            exception_info.value, test_case["expected_exception"]
-        )
+        assert isinstance(exception_info.value, test_case["expected_exception"])
 
 
 @patch("pandas_datareader.data.DataReader")
-def test_get_yahoo_data_exception(mock_DataReader):
+def test_get_yahoo_data_exception(mock_DataReader, yahoo_data_exception_test_cases):
 
-    for test_case in get_yahoo_data_exception_test_cases:
+    for test_case in yahoo_data_exception_test_cases:
         mock_DataReader.side_effect = test_case["mock_side_effect"]
 
         with pytest.raises(Exception) as exception_info:
@@ -162,9 +173,7 @@ def test_get_yahoo_data_exception(mock_DataReader):
                 provider=test_case["provider"],
             )
 
-        assert isinstance(
-            exception_info.value, test_case["expected_exception"]
-        )
+        assert isinstance(exception_info.value, test_case["expected_exception"])
 
 
 def test_merge_data():
@@ -186,8 +195,7 @@ def test_merge_data():
         {
             "input": {
                 "SPY": pd.DataFrame(
-                    {"High": [3, 4], "Low": [3, 4]},
-                    index=["01-01-2001", "01-02-2001"],
+                    {"High": [3, 4], "Low": [3, 4]}, index=["01-01-2001", "01-02-2001"],
                 ),
                 "QQQ": pd.DataFrame(
                     {"Low": [None, 4]}, index=["01-01-2001", "01-02-2001"]
@@ -200,12 +208,7 @@ def test_merge_data():
                 ),
                 "GOOG": pd.DataFrame(
                     {"Adj Close": [3, 4, None, 6]},
-                    index=[
-                        "01-01-2001",
-                        "01-02-2001",
-                        "01-03-2001",
-                        "01-04-2001",
-                    ],
+                    index=["01-01-2001", "01-02-2001", "01-03-2001", "01-04-2001",],
                 ),
             },
             "how": "outer",
