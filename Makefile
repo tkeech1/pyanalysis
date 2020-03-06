@@ -112,7 +112,7 @@ install-setup:
 	python setup.py install 
 
 run-entry-point:
-	.venv/bin/pyanalysis-retriever
+	.venv/bin/pyanalysis-retriever test1 test2
 
 uninstall-setup:
 	rm .venv/lib/python3.8/site-packages/pyanalysis-version_0.0.1_-py3.8.egg || true

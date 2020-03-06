@@ -23,6 +23,7 @@ import pandas_datareader.data as data
 import logging
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -216,7 +217,7 @@ def df_to_s3_csv(df: pd.DataFrame, bucket_name: str, file_name: str):
 
 
 def say_hi():
-    print("hi")
+    print(f"{sys.argv[1:]=}")
 
 
 class RetrieverError(Exception):
