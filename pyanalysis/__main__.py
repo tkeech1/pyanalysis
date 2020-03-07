@@ -1,19 +1,19 @@
 """ Used to run pyanalysis as a module """
-from pyanalysis.retriever import get_yahoo_data_async
-from pyanalysis.retriever import merge_dataframes, df_to_s3_csv, RetrieverError
+from pyanalysis.retriever import (
+    get_yahoo_data_async,
+    merge_dataframes,
+    RetrieverError,
+)
+from pyanalysis.storage import df_to_s3_csv
 import pandas as pd
 import logging
 import logging.config
 from argparse import Namespace
 import argparse
-import json
 import asyncio
 import typing
 
-with open("logging.json", "rt") as f:
-    config = json.load(f)
-    logging.config.dictConfig(config)
-    logger = logging.getLogger("pyanalysis")
+logger = logging.getLogger(__package__)
 
 
 def get_args() -> argparse.Namespace:
@@ -100,8 +100,22 @@ async def main_async(args: Namespace) -> typing.Any:
             logger.error(e)
 
 
-if __name__ == "__main__":
+def main():
+
     args = get_args()
+    logger.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(
+        fmt="%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Z %Y-%m-%d %H:%M:%S",
+    )
+    ch = logging.handlers.RotatingFileHandler(
+        filename=f"{__package__}.log",
+        maxBytes=10485760,
+        backupCount=20,
+        encoding="utf8",
+    )
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
     try:
         task = asyncio.run(main_async(args))
@@ -113,3 +127,7 @@ if __name__ == "__main__":
         df.to_csv(f"./{args.file_name}")
     except Exception as e:
         logger.error(e)
+
+
+if __name__ == "__main__":
+    main()

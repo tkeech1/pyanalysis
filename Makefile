@@ -9,6 +9,9 @@ AWS_REGION?=AWS_REGION
 run-module: format lint test	
 	python -m pyanalysis --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo --file-name=df.csv --bucket-name=stock
 
+run-entry-point: uninstall-wheel clean build-wheel install-wheel
+	.venv/bin/pyanalysis-retriever --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo --file-name=df.csv --bucket-name=stock
+
 # run as a script
 run-script:	
 	python runner.py
@@ -110,9 +113,6 @@ distribute:
 
 install-setup:
 	python setup.py install 
-
-run-entry-point:
-	.venv/bin/pyanalysis-retriever test1 test2
 
 uninstall-setup:
 	rm .venv/lib/python3.8/site-packages/pyanalysis-version_0.0.1_-py3.8.egg || true

@@ -156,11 +156,15 @@ async def test_get_yahoo_data_exception_async(
                 )
             )
 
-        assert isinstance(exception_info.value, test_case["expected_exception"])
+        assert isinstance(
+            exception_info.value, test_case["expected_exception"]
+        )
 
 
 @patch("pandas_datareader.data.DataReader")
-def test_get_yahoo_data_exception(mock_DataReader, yahoo_data_exception_test_cases):
+def test_get_yahoo_data_exception(
+    mock_DataReader, yahoo_data_exception_test_cases
+):
 
     for test_case in yahoo_data_exception_test_cases:
         mock_DataReader.side_effect = test_case["mock_side_effect"]
@@ -173,7 +177,9 @@ def test_get_yahoo_data_exception(mock_DataReader, yahoo_data_exception_test_cas
                 provider=test_case["provider"],
             )
 
-        assert isinstance(exception_info.value, test_case["expected_exception"])
+        assert isinstance(
+            exception_info.value, test_case["expected_exception"]
+        )
 
 
 def test_merge_data():
@@ -195,7 +201,8 @@ def test_merge_data():
         {
             "input": {
                 "SPY": pd.DataFrame(
-                    {"High": [3, 4], "Low": [3, 4]}, index=["01-01-2001", "01-02-2001"],
+                    {"High": [3, 4], "Low": [3, 4]},
+                    index=["01-01-2001", "01-02-2001"],
                 ),
                 "QQQ": pd.DataFrame(
                     {"Low": [None, 4]}, index=["01-01-2001", "01-02-2001"]
@@ -208,7 +215,12 @@ def test_merge_data():
                 ),
                 "GOOG": pd.DataFrame(
                     {"Adj Close": [3, 4, None, 6]},
-                    index=["01-01-2001", "01-02-2001", "01-03-2001", "01-04-2001",],
+                    index=[
+                        "01-01-2001",
+                        "01-02-2001",
+                        "01-03-2001",
+                        "01-04-2001",
+                    ],
                 ),
             },
             "how": "outer",

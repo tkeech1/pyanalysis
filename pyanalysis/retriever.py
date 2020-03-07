@@ -23,7 +23,6 @@ import pandas_datareader.data as data
 import logging
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
-import sys
 
 logger = logging.getLogger(__name__)
 
@@ -105,11 +104,18 @@ async def get_yahoo_data_async(
             if provider == "yahoo":
                 blocking_tasks.append(
                     loop.run_in_executor(
-                        executor, get_data, symbol, start_date, end_date, provider,
+                        executor,
+                        get_data,
+                        symbol,
+                        start_date,
+                        end_date,
+                        provider,
                     )
                 )
 
-        completed, pending = await asyncio.wait(blocking_tasks, timeout=timeout)
+        completed, pending = await asyncio.wait(
+            blocking_tasks, timeout=timeout
+        )
         results = [t.result() for t in completed]
         for r in results:
             for k, v in r.items():
@@ -128,7 +134,10 @@ async def get_yahoo_data_async(
 
 
 def get_yahoo_data(
-    symbols: typing.List[str], start_date: str, end_date: str, provider: str = "yahoo",
+    symbols: typing.List[str],
+    start_date: str,
+    end_date: str,
+    provider: str = "yahoo",
 ) -> typing.Dict[str, pd.DataFrame]:
     """Gets data from Yahoo Finance for a range of time given by
         start_date and stop_date. Supports data retrieval for multiple stock symbols.
@@ -199,25 +208,6 @@ def merge_dataframes(
             final_df = final_df.join(df, how=how, rsuffix=f"_{key}")
 
     return final_df
-
-
-def df_to_s3_csv(df: pd.DataFrame, bucket_name: str, file_name: str):
-    # save a df to s3 as a csv
-    #
-    # from io import StringIO
-    # import boto3
-    # csv_buffer = StringIO()
-    # df.to_csv(csv_buffer)
-    # s3_resource = boto3.resource('s3')
-    # s3_resource.Object(bucket_name, file_name)
-    # .put(Body=csv_buffer.getvalue())
-    #
-    logger.info(f"{bucket_name}-{file_name}")
-    pass
-
-
-def say_hi():
-    print(f"{sys.argv[1:]=}")
 
 
 class RetrieverError(Exception):

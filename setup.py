@@ -19,7 +19,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     entry_points={
-        "console_scripts": ["pyanalysis-retriever = pyanalysis.retriever:say_hi"]
+        "console_scripts": ["pyanalysis-retriever = pyanalysis.__main__:main"]
     },
     python_requires=">=3.6",
 )
