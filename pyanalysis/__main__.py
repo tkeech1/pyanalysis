@@ -65,6 +65,12 @@ def get_args() -> argparse.Namespace:
         help="the name of the file to write to s3",
         required=True,
     )
+    my_parser.add_argument(
+        "--log-level",
+        type=str,
+        action="store",
+        help="the log level (TRACE, DEBUG, INFO, WARNING, ERROR)",
+    )
 
     args = my_parser.parse_args()
 
@@ -103,17 +109,24 @@ async def main_async(args: Namespace) -> typing.Any:
 def main():
 
     args = get_args()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
+    if args.log_level:
+        logger.setLevel(args.log_level)
     formatter = logging.Formatter(
         fmt="%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s",
         datefmt="%Z %Y-%m-%d %H:%M:%S",
     )
-    ch = logging.handlers.RotatingFileHandler(
-        filename=f"{__package__}.log",
-        maxBytes=10485760,
-        backupCount=20,
-        encoding="utf8",
-    )
+
+    # log to rotating file
+    # ch = logging.handlers.RotatingFileHandler(
+    #    filename=f"{__package__}.log",
+    #    maxBytes=10485760,
+    #    backupCount=20,
+    #    encoding="utf8",
+    # )
+
+    # log to console
+    ch = logging.StreamHandler()
     ch.setFormatter(formatter)
     logger.addHandler(ch)
 

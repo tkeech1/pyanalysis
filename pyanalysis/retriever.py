@@ -46,10 +46,10 @@ def get_data(
                 ticker symbol and the pd.Dataframe is the stock price data.
 
     """
-    logger.info(f"Fetching: {symbol}")
+    logger.debug(f"Fetching: {symbol}")
     try:
         df = data.DataReader(symbol, provider, start_date, end_date)
-        logger.info(f"Done: {symbol}")
+        logger.debug(f"Done: {symbol}")
         return {symbol: df}
     except Exception as e:
         logger.error(e)
