@@ -7,10 +7,10 @@ AWS_REGION?=AWS_REGION
 
 # run as a module
 run-module: format lint test	
-	python -m pyanalysis --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo --file-name=df.csv --bucket-name=stock --log-level=DEBUG
+	python -m pyanalysis --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo --file-name=df.csv --log-level=DEBUG
 
 run-entry-point: uninstall-wheel clean build-wheel install-wheel
-	.venv/bin/pyanalysis-retriever --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo --file-name=df.csv --bucket-name=stock --log-level=DEBUG
+	.venv/bin/pyanalysis-retriever --symbol ^GSPC ^GDAXI --start-date 2019-12-01 --end-date 2019-12-02 --provider=yahoo --file-name=df.csv --log-level=DEBUG
 
 # run as a script
 run-script:	

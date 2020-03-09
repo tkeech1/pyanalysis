@@ -195,6 +195,9 @@ def merge_dataframes(
         pd.DataFrame: A dataframe that contains the merged dataframes.
 
     """
+
+    logger.debug("Starting merge data frames")
+
     final_df: pd.DataFrame = None
     for key, df in dataframes.items():
         column_dict = {}
@@ -207,6 +210,7 @@ def merge_dataframes(
         else:
             final_df = final_df.join(df, how=how, rsuffix=f"_{key}")
 
+    logger.debug("Finished merging data frames")
     return final_df
 
 

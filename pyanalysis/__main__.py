@@ -56,7 +56,7 @@ def get_args() -> argparse.Namespace:
         type=str,
         action="store",
         help="the name of an s3 bucket",
-        required=True,
+        required=False,
     )
     my_parser.add_argument(
         "--file-name",
@@ -135,9 +135,12 @@ def main():
         df = pd.DataFrame()
         for t in task:
             df = merge_dataframes(t.result(), how="outer")
-        logger.debug("Merged data frames")
-        df_to_s3_csv(df, args.bucket_name, args.file_name)
-        df.to_csv(f"./{args.file_name}")
+        if args.bucket_name:
+            df_to_s3_csv(df, args.bucket_name, args.file_name)
+        else:
+            logger.debug(f"Writing file: {args.file_name}")
+            df.to_csv(f"./{args.file_name}")
+            logger.debug(f"Finished writing file: {args.file_name}")
     except Exception as e:
         logger.error(e)
 
