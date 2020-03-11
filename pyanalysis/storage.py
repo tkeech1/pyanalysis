@@ -1,3 +1,4 @@
+import typing
 import pandas as pd
 import logging
 import boto3
@@ -6,7 +7,9 @@ from io import StringIO
 logger = logging.getLogger(__name__)
 
 
-def df_to_s3_csv(df: pd.DataFrame, bucket_name: str, file_name: str):
+def df_to_s3_csv(
+    df: pd.DataFrame, bucket_name: str, file_name: str
+) -> typing.Dict[str, str]:
     try:
         logger.debug(f"Storing dataframe to S3 as: {bucket_name}/{file_name}")
         csv_buffer = StringIO()
@@ -17,9 +20,9 @@ def df_to_s3_csv(df: pd.DataFrame, bucket_name: str, file_name: str):
         )
         logger.debug(response)
 
-        logger.info(
-            f"Stored to S3 bucket: {bucket_name}, Object name: {file_name}"
-        )
+        logger.info(f"Stored to S3 bucket: {bucket_name}, Object name: {file_name}")
+
+        return response
     except Exception as e:
         logger.error(e)
         logger.error(f"Args: bucket_name={bucket_name}, file_name={file_name}")
