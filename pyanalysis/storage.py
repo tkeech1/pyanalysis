@@ -18,8 +18,7 @@ def df_to_s3_csv(
         response = s3_resource.Object(bucket_name, file_name).put(
             Body=csv_buffer.getvalue()
         )
-        logger.debug(response)
-
+        logger.debug(f"S3 response: {response}")
         logger.info(f"Stored to S3 bucket: {bucket_name}, Object name: {file_name}")
 
         return response
