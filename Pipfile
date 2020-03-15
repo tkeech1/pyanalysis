@@ -18,7 +18,12 @@ pycodestyle = "*"
 pytest-xdist = "*"
 
 [packages]
-pandas = ">=1.0.1"
+# pandas < 1.0.0 is needed for airflow
+pandas = ">=0.25.3"
 pandas_datareader = ">=0.8.1"
 argparse = "*"
 boto3 = ">=1.12.8"
+apache-airflow = "*"
+typing-extensions = "*"
+# pipenv install typing_extensions git+https://github.com/Tinche/cattrs.git@v1.0.0#egg=cattrs
+cattrs = {git = "https://github.com/Tinche/cattrs.git",ref = "v1.0.0"}
