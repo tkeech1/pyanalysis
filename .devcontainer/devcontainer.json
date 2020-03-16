@@ -27,7 +27,9 @@
         "-e",
         "PIPENV_VENV_IN_PROJECT=enabled",
         "-e",
-        "PIPENV_IGNORE_VIRTUALENVS=1"
+        "PIPENV_IGNORE_VIRTUALENVS=1",
+        "-p",
+        "8080:8080"
     ],
     "appPort": [],
     // Use 'settings' to set *default* container specific settings.json values on container create. 

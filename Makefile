@@ -118,5 +118,16 @@ uninstall-setup:
 	rm .venv/lib/python3.8/site-packages/pyanalysis-version_0.0.1_-py3.8.egg || true
 	rm .venv/bin/pyanalysis-retriever || true
 
-airflow-init-db:
+airflow-init:	
 	.venv/bin/airflow initdb
+	.venv/bin/airflow webserver -p 8080 & 
+	.venv/bin/airflow scheduler & 
+
+deploy-pyanalysis-airflow: airflow-init build-wheel install-wheel
+	mkdir -p ~/airflow/dags
+	cp airflow_runner.py ~/airflow/dags/
+	until airflow list_dags | grep -q pyanalysis; do echo "Waiting for DAG to be ready..."; sleep 1; done
+	airflow unpause pyanalysis
+
+undeploy-pyanalysis-airflow:
+	rm ~/airflow/dags/airflow_runner.py || true
