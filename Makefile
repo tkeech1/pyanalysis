@@ -16,6 +16,16 @@ run-entry-point: uninstall-wheel clean build-wheel install-wheel
 run-script:	
 	python runner.py
 
+# run as a script
+run-profile:	
+	python -m cProfile -s time -o profile.cprof runner.py
+	#pyprof2calltree -k -i profile.cprof
+
+# output a text formatted profile information
+run-profile-text:	
+	python -m cProfile -s time runner.py > profile.txt
+
+
 debug-test:
 	python -m pytest -s
 	# using more processes makes it slower for a small number of tests
