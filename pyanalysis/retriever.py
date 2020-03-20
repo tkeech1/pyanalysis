@@ -23,6 +23,7 @@ import pandas_datareader.data as data
 import logging
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
+from memory_profiler import profile
 
 logger = logging.getLogger(__name__)
 
@@ -104,18 +105,11 @@ async def get_yahoo_data_async(
             if provider == "yahoo":
                 blocking_tasks.append(
                     loop.run_in_executor(
-                        executor,
-                        get_data,
-                        symbol,
-                        start_date,
-                        end_date,
-                        provider,
+                        executor, get_data, symbol, start_date, end_date, provider,
                     )
                 )
 
-        completed, pending = await asyncio.wait(
-            blocking_tasks, timeout=timeout
-        )
+        completed, pending = await asyncio.wait(blocking_tasks, timeout=timeout)
         results = [t.result() for t in completed]
         for r in results:
             for k, v in r.items():
@@ -134,10 +128,7 @@ async def get_yahoo_data_async(
 
 
 def get_yahoo_data(
-    symbols: typing.List[str],
-    start_date: str,
-    end_date: str,
-    provider: str = "yahoo",
+    symbols: typing.List[str], start_date: str, end_date: str, provider: str = "yahoo",
 ) -> typing.Dict[str, pd.DataFrame]:
     """Gets data from Yahoo Finance for a range of time given by
         start_date and stop_date. Supports data retrieval for multiple stock symbols.
@@ -176,6 +167,7 @@ def get_yahoo_data(
     return symbol_data
 
 
+@profile
 def merge_dataframes(
     dataframes: typing.Dict[str, pd.DataFrame], how: str
 ) -> pd.DataFrame:

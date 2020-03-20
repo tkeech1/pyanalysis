@@ -16,10 +16,12 @@ run-entry-point: uninstall-wheel clean build-wheel install-wheel
 run-script:	
 	python runner.py
 
-# run as a script
 run-profile:	
 	python -m cProfile -s time -o profile.cprof runner.py
 	#pyprof2calltree -k -i profile.cprof
+
+run-profile-memory:	
+	python -m memory_profiler runner.py
 
 # output a text formatted profile information
 run-profile-text:	

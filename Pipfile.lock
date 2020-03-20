@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5fcb25eab62e84b208575ed64c507b8550db6e19ada492d99abb391f59ba17d7"
+            "sha256": "d38683a0e479a5fe13e1d2120d5ebe63cf5ac7043661360d17c336ebe00f960e"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -16,9 +16,9 @@
     "default": {
         "alembic": {
             "hashes": [
-                "sha256:791a5686953c4b366d3228c5377196db2f534475bb38d26f70eb69668efd9028"
+                "sha256:035ab00497217628bf5d0be82d664d8713ab13d37b630084da8e1f98facf4dbf"
             ],
-            "version": "==1.4.1"
+            "version": "==1.4.2"
         },
         "apache-airflow": {
             "hashes": [
@@ -68,18 +68,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:5dd06fdc820da2d2efedb365345bc822755ba6e018ce46a2920ecda60ba48d22",
-                "sha256:9549cb07e0f2bd93be90fbf7e544de8e441e448decda8d72defceb1bd8b51686"
+                "sha256:5089aada80f023d21a99b7c10b10f0befd223aeeb60266513f322ad6655b5623",
+                "sha256:8214f8b384c03c76b3940f7a9a8b7e1dc3d7e43b12029a17fb0e68f29fff4ac3"
             ],
             "index": "pypi",
-            "version": "==1.12.24"
+            "version": "==1.12.25"
         },
         "botocore": {
             "hashes": [
-                "sha256:85f1c3f402925a1b896ff198b01cb55e34e7bd28f7ce5ff3450bcfe69376bddd",
-                "sha256:d27c2b800be3eb20dac1a539ddee268acdeb07f2abd3f326e2d88b528017e7ad"
+                "sha256:6639ca0f1cc49ce8bfff220cebcf582028e96de2043f83dbc6868edce00e438c",
+                "sha256:e38cdfa5928dcdf00852693292642001d816a78fb43af6b38edb194578be0d4e"
             ],
-            "version": "==1.15.24"
+            "version": "==1.15.25"
         },
         "cached-property": {
             "hashes": [
@@ -974,6 +974,13 @@
             ],
             "version": "==0.6.1"
         },
+        "memory-profiler": {
+            "hashes": [
+                "sha256:23b196f91ea9ac9996e30bfab1e82fecc30a4a1d24870e81d1e81625f786a2c3"
+            ],
+            "index": "pypi",
+            "version": "==0.57.0"
+        },
         "mock": {
             "hashes": [
                 "sha256:3f9b2c0196c60d21838f307f5825a7b86b678cedc58ab9e50a8988187b4d81e0",
@@ -1036,6 +1043,22 @@
                 "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"
             ],
             "version": "==0.13.1"
+        },
+        "psutil": {
+            "hashes": [
+                "sha256:1413f4158eb50e110777c4f15d7c759521703bd6beb58926f1d562da40180058",
+                "sha256:298af2f14b635c3c7118fd9183843f4e73e681bb6f01e12284d4d70d48a60953",
+                "sha256:60b86f327c198561f101a92be1995f9ae0399736b6eced8f24af41ec64fb88d4",
+                "sha256:685ec16ca14d079455892f25bd124df26ff9137664af445563c1bd36629b5e0e",
+                "sha256:73f35ab66c6c7a9ce82ba44b1e9b1050be2a80cd4dcc3352cc108656b115c74f",
+                "sha256:75e22717d4dbc7ca529ec5063000b2b294fc9a367f9c9ede1f65846c7955fd38",
+                "sha256:a02f4ac50d4a23253b68233b07e7cdb567bd025b982d5cf0ee78296990c22d9e",
+                "sha256:d008ddc00c6906ec80040d26dc2d3e3962109e40ad07fd8a12d0284ce5e0e4f8",
+                "sha256:d84029b190c8a66a946e28b4d3934d2ca1528ec94764b180f7d6ea57b0e75e26",
+                "sha256:e2d0c5b07c6fe5a87fa27b7855017edb0d52ee73b71e6ee368fae268605cc3f5",
+                "sha256:f344ca230dd8e8d5eee16827596f1c22ec0876127c28e800d7ae20ed44c4b310"
+            ],
+            "version": "==5.7.0"
         },
         "py": {
             "hashes": [
@@ -1276,10 +1299,10 @@
         },
         "virtualenv": {
             "hashes": [
-                "sha256:0a854711f2dcae9a644f105d36f5cc6814cd61db47de8c01b8f315d61214afe4",
-                "sha256:a7ac634372748fa4e63e956f8e6981442747fcb4a209876b34e1ff5018d3cfe3"
+                "sha256:87831f1070534b636fea2241dd66f3afe37ac9041bcca6d0af3215cdcfbf7d82",
+                "sha256:f3128d882383c503003130389bf892856341c1da12c881ae24d6358c82561b55"
             ],
-            "version": "==20.0.11"
+            "version": "==20.0.13"
         },
         "wcwidth": {
             "hashes": [
