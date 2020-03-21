@@ -3,7 +3,7 @@ AWS_ACCESS_KEY_ID?=AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY?=AWS_SECRET_ACCESS_KEY
 AWS_REGION?=AWS_REGION
 
-# run 'make get-deps-dev' then ariflow-init-db prior to running any other targets
+# run 'make get-deps-dev' then 'make ariflow-init' prior to running any other targets
 
 # run as a module
 run-module: format lint test	
@@ -130,6 +130,7 @@ uninstall-setup:
 	rm .venv/lib/python3.8/site-packages/pyanalysis-version_0.0.1_-py3.8.egg || true
 	rm .venv/bin/pyanalysis-retriever || true
 
+# start the airflow scheduler and webserver
 airflow-init:	
 	.venv/bin/airflow initdb
 	.venv/bin/airflow webserver -p 8080 & 
