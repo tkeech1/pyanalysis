@@ -37,6 +37,8 @@ dag = DAG(
 )
 
 stock_list = ["SPY", "QQQ"]
+start_date = "12/1/2019"
+end_date = "12/2/2019"
 
 for stock in stock_list:
 
@@ -44,10 +46,6 @@ for stock in stock_list:
         task_id=f"download_prices_{stock}",
         provide_context=False,
         python_callable=get_yahoo_data,
-        op_kwargs={
-            "symbols": [stock],
-            "start_date": "12/1/2019",
-            "end_date": "12/2/2019",
-        },
+        op_kwargs={"symbols": [stock], "start_date": start_date, "end_date": end_date,},
         dag=dag,
     )
