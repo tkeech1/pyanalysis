@@ -3,7 +3,9 @@ AWS_ACCESS_KEY_ID?=AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY?=AWS_SECRET_ACCESS_KEY
 AWS_REGION?=AWS_REGION
 
-# run 'make get-deps-dev' then 'make ariflow-init' prior to running any other targets
+# run 'make deps-dev' prior to running any other targets
+# run 'make airflow-init' to initialize airflow
+# run 'make deploy-pyanalysis-airflow' to run the job in airflow
 
 # run as a module
 run-module: format lint test	
@@ -136,11 +138,17 @@ airflow-init:
 	.venv/bin/airflow webserver -p 8080 & 
 	.venv/bin/airflow scheduler & 
 
-deploy-pyanalysis-airflow: airflow-init build-wheel install-wheel
+deploy-pyanalysis-airflow: uninstall-wheel build-wheel install-wheel
 	mkdir -p ~/airflow/dags
 	cp airflow_runner.py ~/airflow/dags/
 	until airflow list_dags | grep -q pyanalysis; do echo "Waiting for DAG to be ready..."; sleep 1; done
-	airflow unpause pyanalysis
+	.venv/bin/airflow unpause pyanalysis
 
 undeploy-pyanalysis-airflow:
 	rm ~/airflow/dags/airflow_runner.py || true
+
+trigger-pyanalysis-airflow:
+	.venv/bin/airflow trigger_dag pyanalysis
+
+test-airflow-task:
+	.venv/bin/airflow test pyanalysis download_prices_SPY 2020-03-01

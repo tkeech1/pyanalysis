@@ -4,6 +4,7 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 
 from pyanalysis.retriever import get_yahoo_data
+from datetime import datetime, timedelta
 
 default_args = {
     "owner": "tk",
@@ -22,6 +23,7 @@ default_args = {
     # 'dag': dag,
     # 'sla': timedelta(hours=2),
     "execution_timeout": timedelta(seconds=60),
+    "history": 2,
     # 'on_failure_callback': some_function,
     # 'on_success_callback': some_other_function,
     # 'on_retry_callback': another_function,
@@ -37,8 +39,13 @@ dag = DAG(
 )
 
 stock_list = ["SPY", "QQQ"]
-start_date = "12/1/2019"
-end_date = "12/2/2019"
+
+# end date is the current day
+end_date = """{{ds}}"""
+# start date is the current day minus 7 days (set by the params.history values for each task)
+start_date = """{{ (
+    execution_date - macros.timedelta(days=params.history)
+).strftime("%Y-%m-%d") }}"""
 
 for stock in stock_list:
 
@@ -47,5 +54,6 @@ for stock in stock_list:
         provide_context=False,
         python_callable=get_yahoo_data,
         op_kwargs={"symbols": [stock], "start_date": start_date, "end_date": end_date,},
+        params={"history": 7},
         dag=dag,
     )
