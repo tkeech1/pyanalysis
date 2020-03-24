@@ -28,6 +28,9 @@
         "PIPENV_VENV_IN_PROJECT=enabled",
         "-e",
         "PIPENV_IGNORE_VIRTUALENVS=1",
+        // set an environment variable to configure airflow to override defaults in ~/airflow/airflow.cfg
+        "-e",
+        "AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////home/tk/airflow/airflow.db",
         "-p",
         "8080:8080"
     ],
