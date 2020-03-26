@@ -3,6 +3,7 @@ from datetime import timedelta
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 
+from airflow.operators.hello_operator import HelloOperator
 from pyanalysis.retriever import get_yahoo_data
 from datetime import datetime, timedelta
 
@@ -43,6 +44,7 @@ stock_list = ["SPY", "QQQ"]
 # end date is the current day
 end_date = """{{ds}}"""
 # start date is the current day minus 7 days (set by the params.history values for each task)
+# execution_date is a datetime object whereas ds is just a timestamp str
 start_date = """{{ (
     execution_date - macros.timedelta(days=params.history)
 ).strftime("%Y-%m-%d") }}"""
@@ -57,3 +59,5 @@ for stock in stock_list:
         params={"history": 7},
         dag=dag,
     )
+
+hello = HelloOperator(task_id="say_hello", name="tk", dag=dag)

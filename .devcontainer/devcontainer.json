@@ -31,6 +31,8 @@
         // set an environment variable to configure airflow to override defaults in ~/airflow/airflow.cfg
         "-e",
         "AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////home/tk/airflow/airflow.db",
+        //"-e",
+        //"PYTHONPATH=$PYTHONPATH:/home/tk/airflow/plugins",
         "-p",
         "8080:8080"
     ],

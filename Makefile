@@ -138,10 +138,12 @@ airflow-init:
 	.venv/bin/airflow webserver -p 8080 & 
 	.venv/bin/airflow scheduler & 
 
-deploy-pyanalysis-airflow: uninstall-wheel build-wheel install-wheel
+deploy-pyanalysis-airflow: undeploy-pyanalysis-airflow uninstall-wheel build-wheel install-wheel
 	mkdir -p ~/airflow/dags
+	mkdir -p ~/airflow/plugins
+	cp hello_operator.py ~/airflow/plugins/
 	cp airflow_runner.py ~/airflow/dags/
-	until airflow list_dags | grep -q pyanalysis; do echo "Waiting for DAG to be ready..."; sleep 1; done
+	until .venv/bin/airflow list_dags | grep -q pyanalysis; do echo "Waiting for DAG to be ready..."; sleep 1; done
 	.venv/bin/airflow unpause pyanalysis
 
 undeploy-pyanalysis-airflow:
@@ -149,6 +151,10 @@ undeploy-pyanalysis-airflow:
 
 trigger-pyanalysis-airflow:
 	.venv/bin/airflow trigger_dag pyanalysis
+
+restart-webserver-airflow:
+	cat ~/airflow/airflow-webserver.pid | xargs kill -9 || true
+	.venv/bin/airflow webserver -p 8080 & 
 
 test-airflow-task:
 	.venv/bin/airflow test pyanalysis download_prices_SPY 2020-03-01
