@@ -3,7 +3,7 @@ from datetime import timedelta
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 
-from airflow.operators.hello_operator import HelloOperator
+# from airflow.operators.hello_operator import HelloOperator
 from pyanalysis.retriever import get_yahoo_data
 from datetime import datetime, timedelta
 
@@ -61,3 +61,19 @@ for stock in stock_list:
     )
 
 hello = HelloOperator(task_id="say_hello", name="tk", dag=dag)
+
+
+from airflow.models.baseoperator import BaseOperator
+from airflow.utils.decorators import apply_defaults
+
+
+class HelloOperator(BaseOperator):
+    @apply_defaults
+    def __init__(self, name: str, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.name = name
+
+    def execute(self, context):
+        message = "Hello {}".format(self.name)
+        print(message)
+        return message

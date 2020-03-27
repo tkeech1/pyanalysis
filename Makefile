@@ -140,8 +140,8 @@ airflow-init:
 
 deploy-pyanalysis-airflow: undeploy-pyanalysis-airflow uninstall-wheel build-wheel install-wheel
 	mkdir -p ~/airflow/dags
-	mkdir -p ~/airflow/plugins
-	cp hello_operator.py ~/airflow/plugins/
+	#mkdir -p ~/airflow/plugins
+	#cp hello_operator.py ~/airflow/plugins/
 	cp airflow_runner.py ~/airflow/dags/
 	until .venv/bin/airflow list_dags | grep -q pyanalysis; do echo "Waiting for DAG to be ready..."; sleep 1; done
 	.venv/bin/airflow unpause pyanalysis
