@@ -2,7 +2,7 @@ from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 
-class HelloOperator(BaseOperator):
+class StockPriceDownloadOperator(BaseOperator):
     @apply_defaults
     def __init__(self, name: str, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

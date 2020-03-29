@@ -4,8 +4,8 @@ AWS_SECRET_ACCESS_KEY?=AWS_SECRET_ACCESS_KEY
 AWS_REGION?=AWS_REGION
 
 # run 'make deps-dev' prior to running any other targets
-# run 'make airflow-init' to initialize airflow
-# run 'make deploy-pyanalysis-airflow' to run the job in airflow
+# run 'make airflow-init' to initialize airflow - this deploys the pyanalysis runner
+# run 'make trigger-pyanalysis-airflow'
 
 # run as a module
 run-module: format lint test	
@@ -133,18 +133,18 @@ uninstall-setup:
 	rm .venv/bin/pyanalysis-retriever || true
 
 # start the airflow scheduler and webserver
-airflow-init:	
+airflow-init: deploy-pyanalysis-airflow
 	.venv/bin/airflow initdb
 	.venv/bin/airflow webserver -p 8080 & 
 	.venv/bin/airflow scheduler & 
+	until .venv/bin/airflow list_dags | grep -q pyanalysis; do echo "Waiting for DAG to be ready..."; sleep 1; done
+	.venv/bin/airflow unpause pyanalysis
 
 deploy-pyanalysis-airflow: undeploy-pyanalysis-airflow uninstall-wheel build-wheel install-wheel
 	mkdir -p ~/airflow/dags
-	#mkdir -p ~/airflow/plugins
-	#cp hello_operator.py ~/airflow/plugins/
+	mkdir -p ~/airflow/plugins/operators
+	cp hello_operator.py stockpricedownload_operator.py ~/airflow/plugins/operators/
 	cp airflow_runner.py ~/airflow/dags/
-	until .venv/bin/airflow list_dags | grep -q pyanalysis; do echo "Waiting for DAG to be ready..."; sleep 1; done
-	.venv/bin/airflow unpause pyanalysis
 
 undeploy-pyanalysis-airflow:
 	rm ~/airflow/dags/airflow_runner.py || true
