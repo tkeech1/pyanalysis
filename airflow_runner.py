@@ -40,26 +40,44 @@ dag = DAG(
     schedule_interval=timedelta(days=1),
 )
 
-stock_list = ["SPY", "QQQ"]
+stock_list = ["^GSPC", "^GDAXI", "SPY", "GOOG"]
+file_location = "~/stock_data/"
 
 # end date is the current day
 end_date = """{{ds}}"""
 # start date is the current day minus 7 days (set by the params.history values for each task)
 # execution_date is a datetime object whereas ds is just a timestamp str
+# start_date = """{{ (
+#    execution_date - macros.timedelta(days=params.history)
+# ).strftime("%Y-%m-%d") }}"""
+
+# params.history doesn't seem to work correctly in a custom operator
 start_date = """{{ (
-    execution_date - macros.timedelta(days=params.history)
+    execution_date - macros.timedelta(days=2)
 ).strftime("%Y-%m-%d") }}"""
 
+
+op_list = {}
 for stock in stock_list:
 
-    download_spy = PythonOperator(
-        task_id=f"download_prices_{stock}",
-        provide_context=False,
-        python_callable=get_yahoo_data,
-        op_kwargs={"symbols": [stock], "start_date": start_date, "end_date": end_date,},
-        params={"history": 7},
+    # download_spy = PythonOperator(
+    #    task_id=f"download_prices_{stock}",
+    #    provide_context=False,
+    #    python_callable=get_yahoo_data,
+    #    op_kwargs={"symbols": [stock], "start_date": start_date, "end_date": end_date,},
+    #    params={"history": 7},
+    #    dag=dag,
+    # )
+
+    op_list[stock] = StockPriceDownloadOperator(
+        task_id=f"{stock.replace('^','')}",
+        symbol=stock,
+        file_location=file_location,
+        s_date=start_date,
+        e_date=end_date,
         dag=dag,
     )
 
-hello = HelloOperator(task_id="say_hello", name="tk", dag=dag)
-hello = StockPriceDownloadOperator(task_id="stock", name="stockprice", dag=dag)
+# op1..n = download files, place in date folder, name SYMBOL.csv
+# op_merge = merge files, read date folder, create dict str->dataframe, call merge, save merged csv
+# op_store = upload merged CSV to AWS
