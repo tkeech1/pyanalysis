@@ -52,7 +52,7 @@ tox:
 	tox
 
 clean-all: clean
-	rm -r .venv/ || true
+	rm -r .venv/ || true	
 
 clean: clean-docs clean-pyc
 	rm -r __pycache__/ || true
@@ -65,12 +65,13 @@ clean: clean-docs clean-pyc
 	rm -r build/ || true
 	rm -r dist/ || true
 	rm df.csv || true
+	rm -rf ~/stock_data || true
 	
 clean-pyc: 
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
+	find . -name '*.pyc' -exec rm -f {} + || true
+	find . -name '*.pyo' -exec rm -f {} + || true
+	find . -name '*~' -exec rm -f {} + || true
+	find . -name '__pycache__' -exec rm -fr {} + || true
 
 clean-docs:
 	rm -f docs/pyanalysis.rst || true

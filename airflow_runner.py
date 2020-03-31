@@ -41,7 +41,7 @@ dag = DAG(
 )
 
 stock_list = ["^GSPC", "^GDAXI", "SPY", "GOOG"]
-file_location = "~/stock_data/"
+file_location = "/home/tk/stock_data"
 
 # end date is the current day
 end_date = """{{ds}}"""
@@ -55,7 +55,7 @@ end_date = """{{ds}}"""
 start_date = """{{ (
     execution_date - macros.timedelta(days=2)
 ).strftime("%Y-%m-%d") }}"""
-
+execution_date = """{{ execution_date.strftime("%Y-%m-%d") }}"""
 
 op_list = {}
 for stock in stock_list:
@@ -73,8 +73,9 @@ for stock in stock_list:
         task_id=f"{stock.replace('^','')}",
         symbol=stock,
         file_location=file_location,
-        s_date=start_date,
-        e_date=end_date,
+        first_date=start_date,
+        last_date=end_date,
+        execution_date=execution_date,
         dag=dag,
     )
 

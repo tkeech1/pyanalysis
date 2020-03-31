@@ -2,32 +2,40 @@ from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from pyanalysis.retriever import get_data
 
+from pathlib import Path
+
 
 class StockPriceDownloadOperator(BaseOperator):
 
-    template_fields = ["s_date", "e_date"]
+    template_fields = ["first_date", "last_date", "execution_date"]
 
     @apply_defaults
     def __init__(
         self,
         symbol: str,
         file_location: str,
-        s_date: str,
-        e_date: str,
+        first_date: str,
+        last_date: str,
+        execution_date: str,
         *args,
         **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.symbol = symbol
         self.file_location = file_location
-        self.s_date = s_date
-        self.e_date = e_date
+        self.first_date = first_date
+        self.last_date = last_date
+        self.execution_date = execution_date
 
     def execute(self, context):
-        result = get_data(
-            symbol=self.symbol, start_date=self.s_date, end_date=self.e_date
-        )
-        for k, v in result.items():
-            print(f"got {k}")
 
-        print(f"now i should save it to the disk")
+        file_path = f"{self.file_location}/{self.execution_date}"
+
+        result = get_data(
+            symbol=self.symbol, start_date=self.first_date, end_date=self.last_date
+        )
+
+        Path(f"{file_path}").mkdir(exist_ok=True, parents=True)
+
+        for key, df in result.items():
+            df.to_csv(f"{file_path}/{key.replace('^','')}.csv", index=False)
