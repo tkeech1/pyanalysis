@@ -144,7 +144,7 @@ airflow-init: deploy-pyanalysis-airflow
 deploy-pyanalysis-airflow: undeploy-pyanalysis-airflow uninstall-wheel build-wheel install-wheel
 	mkdir -p ~/airflow/dags
 	mkdir -p ~/airflow/plugins/operators
-	cp hello_operator.py stockpricedownload_operator.py ~/airflow/plugins/operators/
+	cp stockpricedownload_operator.py ~/airflow/plugins/operators/
 	cp airflow_runner.py ~/airflow/dags/
 
 undeploy-pyanalysis-airflow:
