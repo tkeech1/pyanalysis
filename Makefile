@@ -92,6 +92,9 @@ bumpversion-minor:
 bumpversion-major:
 	bump2version major
 
+create-requirementstxt:
+	pipenv lock -r > requirements.txt
+
 deps-dev:
 	pipenv install --dev
 	pipenv shell
